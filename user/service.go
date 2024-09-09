@@ -9,10 +9,26 @@ import (
 type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
 	Login(input LoginInput) (User, error)
+	IsEmailAvailability(input CheckEmailInput) (bool, error)
 }
 
 type service struct {
 	repo Repository
+}
+
+// IsEmailAvailability implements Service.
+func (s *service) IsEmailAvailability(input CheckEmailInput) (bool, error) {
+	email := input.Email
+	user, err := s.repo.FindByEmail(email)
+	if err != nil {
+		return false, err
+	}
+
+	if user.ID == 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // Login implements Service.
