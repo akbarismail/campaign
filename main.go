@@ -3,6 +3,7 @@ package main
 import (
 	"campaign/handler"
 	"campaign/user"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -22,6 +23,7 @@ func main() {
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
-	api.POST("/register", userHandler.Register)
+	api.POST("/users", userHandler.Register)
+	api.POST("/sessions", userHandler.Login)
 	router.Run(":8080")
 }
