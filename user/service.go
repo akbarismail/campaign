@@ -10,10 +10,28 @@ type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
 	Login(input LoginInput) (User, error)
 	IsEmailAvailability(input CheckEmailInput) (bool, error)
+	SaveAvatar(id int, filelocation string) (User, error)
 }
 
 type service struct {
 	repo Repository
+}
+
+// SaveAvatar implements Service.
+func (s *service) SaveAvatar(id int, filelocation string) (User, error) {
+	user, err := s.repo.FindById(id)
+	if err != nil {
+		return user, err
+	}
+
+	user.AvatarFileName = filelocation
+
+	updated, err := s.repo.UpdateUser(user)
+	if err != nil {
+		return updated, err
+	}
+
+	return updated, nil
 }
 
 // IsEmailAvailability implements Service.
