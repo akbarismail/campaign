@@ -2,9 +2,11 @@ package main
 
 import (
 	"campaign/auth"
+	"campaign/campaigns"
 	"campaign/handler"
 	"campaign/helper"
 	"campaign/user"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -32,10 +34,13 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
-	// campaignsRepository := campaigns.NewRepository(db)
+	campaignsRepository := campaigns.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
+	campaignService := campaigns.NewService(campaignsRepository)
+	fmt.Println(campaignService)
+
 	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
