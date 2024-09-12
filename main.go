@@ -6,7 +6,6 @@ import (
 	"campaign/handler"
 	"campaign/helper"
 	"campaign/user"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -39,17 +38,19 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	campaignService := campaigns.NewService(campaignsRepository)
-	fmt.Println(campaignService)
 
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
+	router.Static("/images", "./images")
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.Register)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", useAuth(userService, authService), userHandler.UploadAvatar)
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	router.Run(":8080")
 }
 

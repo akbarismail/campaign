@@ -3,7 +3,7 @@ package campaigns
 import "time"
 
 type Campaigns struct {
-	ID               int
+	ID               int `gorm:"primaryKey"`
 	UserId           int
 	Name             string
 	Description      string
@@ -13,13 +13,13 @@ type Campaigns struct {
 	Perks            string
 	BackerCount      int
 	Slug             string
-	CampaignImage    []CampaignImages
+	CampaignImages   []CampaignImage `gorm:"foreignKey:ID"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
 
-type CampaignImages struct {
-	ID         int
+type CampaignImage struct {
+	ID         int `gorm:"primaryKey"`
 	CampaignId int
 	FileName   string
 	IsPrimary  int

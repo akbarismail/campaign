@@ -14,7 +14,7 @@ type repository struct {
 // FindAll implements Repository.
 func (r *repository) FindAll() ([]Campaigns, error) {
 	var campaigns []Campaigns
-	err := r.db.Preload("CampaignImage", "campaign_image.is_primary = 1").Find(&campaigns).Error
+	err := r.db.Preload("CampaignImages", "campaign_images.is_primary=1").Find(&campaigns).Error
 	if err != nil {
 		return campaigns, err
 	}
@@ -25,7 +25,7 @@ func (r *repository) FindAll() ([]Campaigns, error) {
 // FindByUserId implements Repository.
 func (r *repository) FindByUserId(userId int) ([]Campaigns, error) {
 	var campaigns []Campaigns
-	err := r.db.Where("id = ?", userId).Preload("CampaignImage", "campaign_image.is_primary = 1").Find(&campaigns).Error
+	err := r.db.Where("user_id = ?", userId).Preload("CampaignImages", "campaign_images.is_primary=1").Find(&campaigns).Error
 	if err != nil {
 		return campaigns, err
 	}
