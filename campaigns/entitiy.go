@@ -1,6 +1,9 @@
 package campaigns
 
-import "time"
+import (
+	"campaign/user"
+	"time"
+)
 
 type Campaigns struct {
 	ID               int `gorm:"primaryKey"`
@@ -14,6 +17,7 @@ type Campaigns struct {
 	BackerCount      int
 	Slug             string
 	CampaignImages   []CampaignImage `gorm:"foreignKey:ID"`
+	User             user.User       `gorm:"foreignKey:UserId"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }

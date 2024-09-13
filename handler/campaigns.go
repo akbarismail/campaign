@@ -17,6 +17,27 @@ func NewCampaignHandler(campaignService campaigns.Service) *campaignHandler {
 	return &campaignHandler{campaignService}
 }
 
+func (h *campaignHandler) GetCampaign(c *gin.Context) {
+	var input campaigns.GetCampaignDetailInput
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		response := helper.APIResponse("Error to get detail campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	campaignDetail, err := h.campaignService.GetCampaignById(input)
+	if err != nil {
+		response := helper.APIResponse("Error to get detail campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Detail campaign", http.StatusOK, "success", campaigns.FormatCampaignDetail(campaignDetail))
+	c.JSON(http.StatusOK, response)
+}
+
 func (h *campaignHandler) GetCampaigns(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Query("user_id"))
 
