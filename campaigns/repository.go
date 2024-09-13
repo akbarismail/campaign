@@ -7,10 +7,21 @@ type Repository interface {
 	FindByUserId(userId int) ([]Campaigns, error)
 	FindById(id int) (Campaigns, error)
 	Save(campaign Campaigns) (Campaigns, error)
+	Update(campaign Campaigns) (Campaigns, error)
 }
 
 type repository struct {
 	db *gorm.DB
+}
+
+// Update implements Repository.
+func (r *repository) Update(campaign Campaigns) (Campaigns, error) {
+	err := r.db.Save(&campaign).Error
+	if err != nil {
+		return campaign, err
+	}
+
+	return campaign, nil
 }
 
 // Save implements Repository.

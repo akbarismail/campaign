@@ -50,10 +50,11 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", useAuth(userService, authService), userHandler.UploadAvatar)
-	api.POST("/campaigns", useAuth(userService, authService), campaignHandler.CreateCampaign)
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.POST("/campaigns", useAuth(userService, authService), campaignHandler.CreateCampaign)
+	api.PUT("/campaigns/:id", useAuth(userService, authService), campaignHandler.UpdateCampaign)
 
 	router.Run(":8080")
 }
