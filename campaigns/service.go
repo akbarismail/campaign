@@ -26,8 +26,6 @@ func (s *service) SaveCampaignImage(input CreateCampaignImageInput, fileLocation
 		return CampaignImage{}, err
 	}
 
-	fmt.Println(campaign.UserId, "pertama")
-
 	if campaign.UserId != input.User.ID {
 		return CampaignImage{}, errors.New("not an owner of the campaign")
 	}
