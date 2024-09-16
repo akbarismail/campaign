@@ -8,10 +8,32 @@ type Repository interface {
 	FindById(id int) (Campaigns, error)
 	Save(campaign Campaigns) (Campaigns, error)
 	Update(campaign Campaigns) (Campaigns, error)
+	CreateImage(campaignImage CampaignImage) (CampaignImage, error)
+	MarkAllAsNonPrimary(campaignId int) (bool, error)
 }
 
 type repository struct {
 	db *gorm.DB
+}
+
+// MarkAllAsNonPrimary implements Repository.
+func (r *repository) MarkAllAsNonPrimary(campaignId int) (bool, error) {
+	err := r.db.Model(&CampaignImage{}).Where("campaign_id = ?", campaignId).Update("is_primary", false).Error
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+// CreateImage implements Repository.
+func (r *repository) CreateImage(campaignImage CampaignImage) (CampaignImage, error) {
+	err := r.db.Create(&campaignImage).Error
+	if err != nil {
+		return campaignImage, err
+	}
+
+	return campaignImage, nil
 }
 
 // Update implements Repository.

@@ -2,6 +2,12 @@ package campaigns
 
 import "campaign/user"
 
+type CreateCampaignImageInput struct {
+	CampaignID int  `form:"campaign_id" binding:"required"`
+	IsPrimary  bool `form:"is_primary"`
+	User       user.User
+}
+
 type CreateCampaignInput struct {
 	Name             string `json:"name" binding:"required"`
 	ShortDescription string `json:"short_description" binding:"required"`
