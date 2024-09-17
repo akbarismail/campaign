@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"campaign/campaigns"
 	"campaign/user"
 	"time"
 )
@@ -12,7 +13,8 @@ type Transaction struct {
 	Amount     int
 	Status     string
 	Code       int
-	User       user.User
+	User       user.User           `gorm:"foreignKey:UserId"`
+	Campaign   campaigns.Campaigns `gorm:"foreignKey:CampaignId"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

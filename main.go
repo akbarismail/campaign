@@ -61,6 +61,7 @@ func main() {
 	api.PUT("/campaigns/:id", useAuth(userService, authService), campaignHandler.UpdateCampaign)
 	api.POST("/campaign-images", useAuth(userService, authService), campaignHandler.UploadImage)
 	api.GET("/campaigns/:id/transactions", useAuth(userService, authService), transactionHandler.GetCampaignTransaction)
+	api.GET("/transactions", useAuth(userService, authService), transactionHandler.GetUserTransaction)
 
 	router.Run(":8080")
 }
