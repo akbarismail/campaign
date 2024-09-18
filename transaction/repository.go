@@ -5,10 +5,43 @@ import "gorm.io/gorm"
 type Repository interface {
 	FindCampaignId(campaignId int) ([]Transaction, error)
 	FindUserId(userId int) ([]Transaction, error)
+	FindById(id int) (Transaction, error)
+	Save(transaction Transaction) (Transaction, error)
+	Update(transaction Transaction) (Transaction, error)
 }
 
 type repository struct {
 	db *gorm.DB
+}
+
+// FindById implements Repository.
+func (r *repository) FindById(id int) (Transaction, error) {
+	var transaction Transaction
+	err := r.db.Where("id = ?", id).Find(&transaction).Error
+	if err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
+}
+
+// Update implements Repository.
+func (r *repository) Update(transaction Transaction) (Transaction, error) {
+	err := r.db.Save(&transaction).Error
+	if err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
+}
+
+// Save implements Repository.
+func (r *repository) Save(transaction Transaction) (Transaction, error) {
+	err := r.db.Create(&transaction).Error
+	if err != nil {
+		return transaction, err
+	}
+	return transaction, nil
 }
 
 // FindUserId implements Repository.

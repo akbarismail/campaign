@@ -19,6 +19,13 @@ func NewUserHandler(userService user.Service, authService auth.Service) *userHan
 	return &userHandler{userService, authService}
 }
 
+func (h *userHandler) FetchUser(c *gin.Context) {
+	currentUser := c.MustGet("currentUser").(user.User)
+	formatter := user.UserFormatter(currentUser, "")
+	response := helper.APIResponse("Successfuly fetch user data", http.StatusOK, "success", formatter)
+	c.JSON(http.StatusOK, response)
+}
+
 func (h *userHandler) Register(c *gin.Context) {
 	var input user.RegisterUserInput
 	if err := c.ShouldBindJSON(&input); err != nil {

@@ -5,6 +5,7 @@ import (
 	"campaign/campaigns"
 	"campaign/handler"
 	"campaign/helper"
+	"campaign/payment"
 	"campaign/transaction"
 	"campaign/user"
 	"log"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
@@ -40,13 +42,15 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	campaignService := campaigns.NewService(campaignsRepository)
-	transactionService := transaction.NewService(transactionRepository, campaignsRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignsRepository, paymentService)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 	transactionHandler := handler.NewTransactionhandler(transactionService)
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	router.Static("/images", "./images")
 	api := router.Group("/api/v1")
 
@@ -54,6 +58,7 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", useAuth(userService, authService), userHandler.UploadAvatar)
+	api.GET("/users/fetch", useAuth(userService, authService), userHandler.FetchUser)
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
@@ -62,6 +67,8 @@ func main() {
 	api.POST("/campaign-images", useAuth(userService, authService), campaignHandler.UploadImage)
 	api.GET("/campaigns/:id/transactions", useAuth(userService, authService), transactionHandler.GetCampaignTransaction)
 	api.GET("/transactions", useAuth(userService, authService), transactionHandler.GetUserTransaction)
+	api.POST("/transactions", useAuth(userService, authService), transactionHandler.CreateTransaction)
+	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
 	router.Run(":8080")
 }
